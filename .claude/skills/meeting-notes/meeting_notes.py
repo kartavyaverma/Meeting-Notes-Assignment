@@ -25,6 +25,7 @@ NOTION_VERSION = "2022-06-28"
 MIN_WORDS = 40          # below this it can't be a meeting worth notes
 TEXT_LIMIT = 2000       # Notion's max characters per rich-text item
 LIST_LIMIT = 30         # keep pages under Notion's 100-blocks-per-request limit
+RETRY_WAITS = [20, 40]  # seconds; few, spaced retries, since failed calls can still count against quota
 REQUIRED_COLUMNS = {"Date": "date", "Attendees": "rich_text", "Needs review": "checkbox", "Source": "rich_text"}
 
 PROMPT = """You turn a raw call transcript into structured meeting notes for a busy team.
@@ -217,7 +218,7 @@ def extract(text, source):
                              "thinkingConfig": {"thinkingLevel": "low"}},
     }
     headers = {"x-goog-api-key": os.environ["GEMINI_API_KEY"]}
-    for attempt in range(5):
+    for attempt in range(len(RETRY_WAITS) + 1):
         try:
             r = http("POST", GEMINI_URL, headers, body)
             break
@@ -227,8 +228,10 @@ def extract(text, source):
                 continue
             if e.status == 429 and "quota" in str(e).lower():
                 raise ApiError(429, f"Gemini quota used up, try again later or enable billing: {e}") from None
-            if e.status in (429, 500, 503) and attempt < 4:
-                time.sleep(5 * 2 ** attempt)
+            if e.status in (429, 500, 503) and attempt < len(RETRY_WAITS):
+                wait = RETRY_WAITS[attempt]
+                print(f"  Gemini busy ({e.status}), retrying in {wait}s ({attempt + 1}/{len(RETRY_WAITS)})", flush=True)
+                time.sleep(wait)
                 continue
             raise ApiError(e.status, f"Gemini: {e}") from None
     cand = (r.get("candidates") or [{}])[0]
@@ -429,16 +432,22 @@ def main():
         sys.exit(str(e))
 
     results = []
-    for f in files:
-        print(f"\n== {f.name}")
+    for n, f in enumerate(files):
+        print(f"\n== {f.name}", flush=True)
+        stop = False
         try:
             status, detail = process(f, args, title_prop)
         except ApiError as e:
             status, detail = "failed", str(e)
+            stop = str(e).startswith("Gemini") and e.status in (429, 503)
         except OSError as e:
             status, detail = "failed", f"can't read file ({e.strerror})"
         print(f"  -> {status}: {detail}")
         results.append((f.name, status, detail))
+        if stop:   # don't burn quota on the rest of the batch while Gemini is overloaded
+            results += [(r.name, "not run", "Gemini overloaded or out of quota; re-run later (created pages are skipped)")
+                        for r in files[n + 1:]]
+            break
 
     print(f"\nDone: {len(results)} file(s)")
     for name, status, detail in results:
