@@ -9,13 +9,13 @@ A file-by-file guide to this repository: what each file is for, what's inside it
 
 ## 1. The project in one paragraph
 
-`meeting-notes` turns call transcripts that a team already has (Zoom, Teams or Otter exports) into structured pages in a Notion database. **Gemini 3.8 Flash** extracts the title, date, attendees, summary, decisions and action items. The code then **checks every action item's owner against the transcript's actual words**, and marks anything it can't confirm as **⚠️ Please verify**. Finally, it creates a formatted page through **Notion's REST API**. It runs as a Claude Code skill (`/meeting-notes`) or a terminal command, uses only the Python standard library, and has no server.
+`meeting-notes` turns call transcripts that a team already has (Zoom, Teams or Otter exports) into structured pages in a Notion database. **Gemini 3.8 Flash** extracts the title, date, attendees, summary, decisions and action items. The code then **checks every action item's owner against the transcript's actual words**, and marks anything it can't confirm as **⚠️ Please verify**. Finally, it creates a formatted page through **Notion's REST API**. It runs as one command (`python main.py transcripts/`), uses only the Python standard library, and has no server.
 
 ## 2. How a transcript flows through the code
 
 ```mermaid
 flowchart TD
-    A["Transcript .txt<br/>Zoom · Teams · Otter"] --> B["/meeting-notes skill<br/>or terminal command"]
+    A["Transcript .txt<br/>Zoom · Teams · Otter"] --> B["python main.py transcripts/"]
     B --> C["cli.py<br/>load .env · collect files"]
     C --> D{"notion.py<br/>database set up?"}
     D -- no --> X["Stop · exit code 2<br/>'run --init-db'"]
@@ -46,11 +46,6 @@ The same flow as text:
 
 ```
 meeting-notes/
-├── .claude/
-│   └── skills/
-│       └── meeting-notes/
-│           ├── SKILL.md              Instructions Claude follows when /meeting-notes is used
-│           └── meeting_notes.py      Entry point: puts src/ on the path and runs the CLI
 ├── .github/
 │   └── workflows/
 │       └── tests.yml                 CI: runs the test suite on Ubuntu and Windows
@@ -87,6 +82,7 @@ meeting-notes/
 ├── DOCUMENTATION.md                  Assignment write-up and build log
 ├── PROJECT_STRUCTURE.md              This file
 ├── README.md                         Setup and usage
+├── main.py                           Entry point: puts src/ on the path and runs the CLI
 └── pyproject.toml                    Package metadata and the `meeting-notes` command
 ```
 
@@ -96,7 +92,7 @@ Folders named `__pycache__/` appear after running the code. Python creates them 
 
 ```mermaid
 flowchart LR
-    entry[".claude/…/meeting_notes.py"] --> cli
+    entry["main.py"] --> cli
     main["__main__.py"] --> cli
     cli --> config
     cli --> api
@@ -117,17 +113,10 @@ flowchart LR
 
 ## 5. Files, one by one
 
-### Claude Code skill
+### Entry point
 
-#### `.claude/skills/meeting-notes/SKILL.md`
-The instructions Claude Code loads when someone types `/meeting-notes` or asks for meeting notes from a transcript.
-- **Front matter:** the skill's `name`, a `description` that tells Claude when to use it, and an `argument-hint`.
-- **Steps:** work out the input (file paths, a folder, or pasted text saved to `transcripts/pasted-YYYYMMDD-HHMM.txt`); run the command; report each file's result, including every "please verify" reason word for word.
-- **A key rule:** Claude must not write or rewrite the notes itself. Gemini produces them and the code checks them.
-- **Fixing failures:** a table mapping each error message to what the user should do, plus the exit codes.
-
-#### `.claude/skills/meeting-notes/meeting_notes.py`
-The command the skill runs: `python .claude/skills/meeting-notes/meeting_notes.py transcripts/`. It adds `src/` to Python's import path, so nothing has to be installed, then calls `meeting_notes.cli.main()` and exits with its return code.
+#### `main.py`
+The command you run: `python main.py transcripts/`. It adds `src/` to Python's import path, so nothing has to be installed, then calls `meeting_notes.cli.main()` and exits with its return code. After `pip install -e .`, the `meeting-notes` command does the same thing.
 
 ### Package: `src/meeting_notes/`
 
@@ -334,7 +323,7 @@ Package metadata: the name `meeting-notes`, version `1.0.0`, Python 3.9 or newer
 GitHub Actions CI. On every push and pull request, it runs `python -m unittest -v` on Ubuntu and Windows with Python 3.9 and 3.13. The tests make no API calls, so the workflow needs no secrets.
 
 #### `README.md`
-Setup and usage: requirements, how to create the Notion connection and database, `--init-db`, running the skill and the command, options, exit codes, configuration, database columns, a short "how it works", development, security and limitations.
+Setup and usage: requirements, how to create the Notion connection and database, `--init-db`, running the command, options, exit codes, configuration, database columns, a short "how it works", development, security and limitations.
 
 #### `DOCUMENTATION.md`
 The assignment write-up: the capability and its caveat, the pain point and the Notion comparison, the what/why/how of the workflow, measured costs, the three-run comparison, edge cases, other pairings considered, 10 interview questions, research sources and the build log.

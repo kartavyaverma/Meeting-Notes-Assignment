@@ -1,6 +1,6 @@
 # meeting-notes
 
-A Claude Code skill (`/meeting-notes`) and command-line tool that turns call transcripts you already have into structured pages in a Notion database.
+A command-line tool, powered by **Gemini 3.8 Flash**, that turns call transcripts you already have into structured pages in a Notion database.
 
 - **Extraction:** Gemini 3.8 Flash reads the transcript and returns the title, date, attendees, a summary, decisions and action items.
 - **Safeguard:** every action item's owner has to be backed by a word-for-word quote from, or addressed to, that person. Anything else is marked **⚠️ Please verify** with the reason, and the page's `Needs review` box is ticked.
@@ -29,25 +29,17 @@ For a file-by-file explanation of the code, see [PROJECT_STRUCTURE.md](PROJECT_S
    3. Copy the database ID (the 32-character code before `?v=` in its URL) into `NOTION_DATABASE_ID`.
 3. **Columns.** Add the columns the tool writes. This is safe to run again; it only adds what's missing:
    ```bash
-   python .claude/skills/meeting-notes/meeting_notes.py --init-db
+   python main.py --init-db
    ```
 
 ## Usage
 
-**In Claude Code**, from this folder:
-
-```
-/meeting-notes transcripts/
-/meeting-notes transcripts/sample-client-kickoff-brightpath.txt
-```
-
-You can also paste a transcript into the chat and ask for meeting notes.
-
-**From a terminal:**
+From the project folder:
 
 ```bash
-python .claude/skills/meeting-notes/meeting_notes.py transcripts/
-python .claude/skills/meeting-notes/meeting_notes.py transcripts/ --dry-run
+python main.py transcripts/
+python main.py transcripts/sample-client-kickoff-brightpath.txt
+python main.py transcripts/ --dry-run
 ```
 
 Or install it once (`pip install -e .`) and use the `meeting-notes` command instead.
@@ -104,9 +96,7 @@ All settings come from environment variables, usually through `.env`. Real envir
 ## Project structure
 
 ```
-.claude/skills/meeting-notes/
-  SKILL.md              Skill instructions for Claude Code
-  meeting_notes.py      Entry point; puts src/ on the path and runs the CLI
+main.py                 Entry point: python main.py transcripts/
 src/meeting_notes/
   cli.py                Arguments, batch runner, output and exit codes
   config.py             .env loading and settings validation
@@ -132,7 +122,7 @@ python -m unittest -v
 ```
 
 Conventions:
-- Standard library only, so the skill runs anywhere Python does.
+- Standard library only, so the tool runs anywhere Python does.
 - API clients take injectable `http`, `sleep` and `notify` functions, so every behaviour, including retries and failures, can be tested without calling Gemini or Notion.
 - User-facing errors say what to do next. Setup problems exit with code 2.
 

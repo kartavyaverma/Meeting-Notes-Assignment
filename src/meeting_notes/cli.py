@@ -170,7 +170,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
 
 def _init_db(out: Output) -> int:
     added = NotionClient(Settings.from_env(need_gemini=False, need_notion=True)).init_database()
-    out(f"Added columns: {', '.join(added)}" if added else "The database already has every column the skill needs.")
+    out(f"Added columns: {', '.join(added)}" if added else "The database already has every column the tool needs.")
     return EXIT_OK
 
 

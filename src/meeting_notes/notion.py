@@ -60,7 +60,7 @@ class NotionClient:
                 problems.append(f"'{name}' is {actual}, expected {kind}")
         if problems:
             raise ConfigError(f"The Notion database isn't set up: {'; '.join(problems)}. "
-                              "Run the skill script with --init-db to add missing columns.")
+                              "Run `python main.py --init-db` to add missing columns.")
         return _title_column(columns)
 
     def init_database(self) -> List[str]:
