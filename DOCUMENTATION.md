@@ -1,0 +1,115 @@
+# AI Engineer Intern Assignment — Documentation
+
+---
+
+## 1. The capability I spotted
+
+**Capability:** Gemini 3.8 Flash (Google), released September 2, 2026, well within the assignment's "last few weeks" window. The build uses it directly as the model that reads a raw call transcript and pulls out structured meeting notes (attendees, decisions, action items).
+
+**Why this counts as "new":** It has a specific, checkable release date (September 2, 2026). It isn't a general capability I already knew about. It's also the actual reasoning engine inside the workflow, not just the tool I used to write the code.
+
+**Why this model instead of a flagship one:** This is a frequent, simple extraction task: every client call a business takes produces one. A flagship model (e.g. GPT-6 Astra or Claude Fable 5.1) costs roughly $0.15–0.20 per call at published rates. Gemini 3.8 Flash costs roughly $0.01–0.02 per call, 15–25x less, and the job is structured extraction, not deep multi-step reasoning. For a 50–300 person business running this on every client call, that gap adds up. Choosing the cheapest model that still does the job correctly is the right call for a workflow that repeats this often. [FILL: replace the estimate with the per-run cost measured from real token usage during testing.]
+
+**The caveat I designed around:** Flash models give up some reasoning depth in exchange for speed and low cost. The real risk isn't total failure. It's **misattribution**: getting a decision or action item right but giving it to the wrong person, or missing a softer commitment ("I'll try to get that over" vs. an explicit "I will do X by Friday") that a stronger model might catch. So the build doesn't blindly trust every extracted action item. When the transcript doesn't explicitly name an owner, the output marks the item "please verify" instead of guessing. [FILL: note here whether you actually saw a misattribution during testing, and what the flagged output looked like.]
+
+**Where Notion fits in:** Notion is *not* the Part 1 capability. It's the existing tool the finished notes get written into, through a direct call to Notion's own REST API. That matches the "agent calling an existing tool's API" shape the assignment asks for.
+
+---
+
+## 2. The pain point I matched it to
+
+**Pain point:** "Meeting notes never get written up, so decisions and follow-ups fall through." (from the assignment's own ICP pain list)
+
+**Why this pairing makes sense:**
+- A 50–300 person service/product business is on client and sales calls constantly. Nobody's job is taking notes, and writing them up afterward is the first thing people skip when they're busy.
+- Most of these businesses already keep client and project records in Notion. Having structured notes just show up there removes a step instead of adding another tool to check.
+- Extraction (attendees, decisions, action items) is a narrow, repeatable task. That suits a fast, cheap model better than a flagship one, and cost matters because this runs on *every* call a business takes, not once.
+- No paid transcription or note-taker service is needed. This assumes the business already has a transcript (from Zoom, Otter's free tier, etc.) and starts from there.
+
+---
+
+## 3. The workflow — what / why / how
+
+### What it does
+[FILL: 2-3 sentence plain description of the finished skill, once built.]
+
+### Why this approach
+[FILL: Why a Claude Code skill that calls the Gemini API and Notion's REST API directly, instead of e.g. a cron script, a hosted webhook, or the Notion MCP server. What did calling the REST API directly buy you (no extra server process, exact control over block formatting)? What tradeoff did you accept (e.g. it only runs when invoked manually, not on a schedule)?]
+
+### How it works (step by step)
+1. [FILL: e.g. "A transcript file is dropped in /transcripts or pasted into the terminal."]
+2. [FILL: "The script sends it to Gemini 3.8 Flash, which returns JSON: title, date, attendees, decisions, action items."]
+3. [FILL: "The script validates the JSON and flags action items without an explicitly named owner."]
+4. [FILL: "The script calls Notion's REST API to create a page in the connected database, formatted with headings and an action-items table."]
+
+`[SCREENSHOT: Google AI Studio showing the Gemini API key created (key value blurred)]`
+`[SCREENSHOT: the terminal showing the successful test call to gemini-3.8-flash]`
+`[SCREENSHOT: setting up the Notion integration token in Notion's settings (secret blurred)]`
+`[SCREENSHOT: sharing the target database with the integration]`
+`[SCREENSHOT: the terminal running the /meeting-notes skill against a real transcript]`
+`[SCREENSHOT: the finished Notion page it created]`
+`[GIF: the whole run, from pasting the transcript to the Notion page appearing, in one continuous clip]`
+
+---
+
+## 4. Other capability-to-pain-point pairings I considered
+
+*(based on research into what shipped recently, as of mid-September 2026)*
+
+| Capability | Type | Pain point it could solve | Why I didn't build this one |
+|---|---|---|---|
+| Official Notion MCP server | New connector | Meeting notes / onboarding / dashboards: anything that writes into Notion | I checked its release date and it isn't actually new. It first shipped in April 2025, with a "3.5" feature update in May 2026, so it misses the assignment's "last few weeks" bar for Part 1. Notion stays in the build only as the destination tool, called through its plain REST API, not as the Part 1 capability |
+| Claude Fable 5.1 (Anthropic, Sept 1, 2026) | New model | The same task, with stronger reasoning | Same headline price as GPT-6 Astra ($10/$50 per million tokens), roughly 15–25x more than Gemini 3.8 Flash for a task that's structured extraction, not deep reasoning. Considered, then ruled out on cost per run for a workflow meant to run on every call |
+| GPT-6 Astra (OpenAI, Sept 3, 2026) | New model | Drafting personalized replies to leads from form submissions | More reasoning power than this task needs, the same cost problem as Fable 5.1 above, and it would add a second provider and API key to the workflow |
+| Slack native MCP support | New connector | A DM or comment sits unanswered for hours | Real ICP pain, but testing the native MCP path needs a live Slack workspace on Business+ or Enterprise, which is hard to demo end to end in 1–3 days on a personal account |
+| Meta Muse Spark 1.3 (Sept 2, 2026) | New agent model | [FILL if explored further] | Less documentation on what actually changed in 1.3 vs 1.2, so more research risk for a 1–3 day build |
+| Salesforce Agentforce named agents (Sept 11, 2026) | New agent product | Several ICP pains at once (sales, service, support) | It's a full platform, not something I can wire together myself in a small script, which goes against the assignment's "not a hosted application" rule |
+
+---
+
+## 5. Likely interview questions
+
+1. **Why did you pick a Flash-tier model instead of a flagship one?**
+   [FILL]
+2. **What happens if the transcript is garbled or the call was cut short — does the skill fail gracefully?**
+   [FILL]
+3. **Why call Notion's REST API directly instead of using the Notion MCP server?**
+   [FILL]
+4. **Why a Claude Code skill instead of a scheduled/cron job?**
+   [FILL]
+5. **How would you turn this into something that runs automatically after every call, without you manually invoking it?**
+   [FILL]
+6. **What's the actual caveat you designed around, and how does the safeguard work end to end?**
+   [FILL]
+7. **Why this pain point specifically, out of the six the assignment listed?**
+   [FILL]
+8. **What would break first if 50 people at a company used this simultaneously?**
+   [FILL]
+9. **Why didn't you use a visual/no-code tool — wasn't that faster?**
+   [FILL]
+10. **How did you validate the output was actually correct and not hallucinated action items?**
+    [FILL]
+11. **What would this actually cost a business running it at real volume — say 20 calls a week?**
+    [FILL: use the per-run cost measured from real token usage]
+12. **If you had another week, what's the next thing you'd build on top of this?**
+    [FILL]
+
+---
+
+## 6. Appendix — raw research notes
+
+Capabilities that shipped in the ~2 weeks before this build (for reference and as an audit trail):
+- Sept 1, 2026: Claude Fable 5.1 and Mythos 5.1 (Anthropic)
+- Sept 2, 2026: Gemini 3.8 Flash + gated Cyber variant (Google); Muse Spark 1.3 (Meta)
+- Sept 3, 2026: GPT-6 Astra (OpenAI)
+- Sept 10, 2026: DeepSeek V4.1 Flash
+- Sept 11, 2026: Fugu Ultra v2.0 and Fugu Max (Sakana AI); Salesforce Agentforce named agents
+- Ongoing: Slack native MCP support (Business+/Enterprise); official Notion MCP server; Hex as an MCP client
+
+Sources checked: LLM Gateway release timeline, Capital & Compute model tracker, Agentic.ai news, AI Agent Store weekly digest, and the per-token pricing pages for Gemini 3.8 Flash, Claude Fable 5.1, and GPT-6 Astra (used to compare cost per run before picking Gemini 3.8 Flash). Also Notion's official MCP server changelog and GitHub repo, which confirmed it was *not* recent enough for Part 1 (first shipped April 2025, "3.5" update May 2026).
+
+---
+
+## 7. Build log
+
+- **Step 1: Scaffold.** Created the project folder with README, `.env.example`, `.gitignore` (ignores `.env` and every transcript except `sample-*`), a `/transcripts` folder, and this document. Chose plain Python with only the standard library (`urllib`) so there's nothing to install and the whole flow is two HTTP calls you can read.
