@@ -29,4 +29,12 @@ python .claude/skills/meeting-notes/meeting_notes.py transcripts/ --dry-run
 
 `--dry-run` prints the extracted notes without writing to Notion. Re-running a folder skips transcripts already imported; use `--force` to import them again.
 
+## Test
+
+```bash
+python tests/test_checks.py
+```
+
+Runs the owner-verification and bad-input checks offline, with no API calls and no quota used.
+
 See `DOCUMENTATION.md` for the full write-up.
