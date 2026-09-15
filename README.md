@@ -107,7 +107,6 @@ src/meeting_notes/
   notion.py             Database checks and setup, duplicates, page building
 tests/                  Offline test suite (no network, no keys)
 transcripts/            Input; only sample-* files are committed
-.github/workflows/      CI: runs the tests on Ubuntu and Windows
 DOCUMENTATION.md        Assignment write-up and build log
 PROJECT_STRUCTURE.md    File-by-file guide to the code
 CHANGELOG.md            Release notes
@@ -125,8 +124,6 @@ Conventions:
 - Standard library only, so the tool runs anywhere Python does.
 - API clients take injectable `http`, `sleep` and `notify` functions, so every behaviour, including retries and failures, can be tested without calling Gemini or Notion.
 - User-facing errors say what to do next. Setup problems exit with code 2.
-
-CI runs the same suite on Ubuntu and Windows with Python 3.9 and 3.13 on every push and pull request.
 
 ## Security and privacy
 

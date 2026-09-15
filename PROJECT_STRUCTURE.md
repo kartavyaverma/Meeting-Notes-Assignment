@@ -46,9 +46,6 @@ The same flow as text:
 
 ```
 meeting-notes/
-├── .github/
-│   └── workflows/
-│       └── tests.yml                 CI: runs the test suite on Ubuntu and Windows
 ├── src/
 │   └── meeting_notes/
 │       ├── __init__.py               Package version
@@ -318,9 +315,6 @@ Editor settings: UTF-8, LF line endings, a final newline, no trailing spaces, 4-
 
 #### `pyproject.toml`
 Package metadata: the name `meeting-notes`, version `1.0.0`, Python 3.9 or newer, no dependencies. It also defines a `meeting-notes` command (after `pip install -e .`) that runs `meeting_notes.cli:main`, and tells setuptools the code lives in `src/`.
-
-#### `.github/workflows/tests.yml`
-GitHub Actions CI. On every push and pull request, it runs `python -m unittest -v` on Ubuntu and Windows with Python 3.9 and 3.13. The tests make no API calls, so the workflow needs no secrets.
 
 #### `README.md`
 Setup and usage: requirements, how to create the Notion connection and database, `--init-db`, running the command, options, exit codes, configuration, database columns, a short "how it works", development, security and limitations.

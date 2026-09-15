@@ -21,7 +21,7 @@ Notable changes to this project. The format follows [Keep a Changelog](https://k
 - `--init-db` to add the required Notion columns. It never changes existing columns.
 - Content-hash duplicate detection via a `Content hash` column, with a filename fallback for pages imported before hashes existed.
 - `GEMINI_MODEL` setting, and a per-run cost when prices are configured.
-- Offline test suite and a GitHub Actions workflow (Ubuntu and Windows, Python 3.9 and 3.13).
+- Offline test suite of 81 tests (no network calls, no keys).
 - `pyproject.toml`, `.editorconfig` and `.gitattributes`.
 
 ### Changed
