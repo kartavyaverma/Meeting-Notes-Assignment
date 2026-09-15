@@ -1,0 +1,53 @@
+Ridgeline Logistics - discovery call
+(Fictional transcript written for testing. Companies and people are invented.)
+
+Priya Nair  0:00
+Hi Tom, thanks for jumping on. I know you only have twenty minutes so I'll keep it tight.
+
+Tom Becker  0:06
+Appreciate it. Yeah, I've got a board prep call right after.
+
+Priya Nair  0:10
+So from your form, it sounds like the main issue is your driver onboarding process?
+
+Tom Becker  0:15
+Right. We hire around forty drivers a month, and onboarding is still PDFs over email. Documents go missing, licenses expire without anyone noticing, and our compliance person spends half her week chasing paperwork.
+
+Priya Nair  0:31
+That's a really common pattern. We built something similar for a freight company last year, a portal where drivers upload documents and it flags anything expiring in the next thirty days.
+
+Tom Becker  0:43
+That's basically exactly what we want. What does something like that cost?
+
+Priya Nair  0:48
+For that project it was around sixty thousand, but it depends a lot on which systems it connects to. Are you on any HR platform?
+
+Tom Becker  0:56
+We're on BambooHR for office staff, but drivers are tracked in a separate system called Samsara.
+
+Priya Nair  1:04
+Okay, Samsara has a decent API, so that helps. I'll send you two case studies from similar logistics projects by Thursday, including the freight one.
+
+Tom Becker  1:13
+Great. Sixty is probably above what we budgeted, but it depends on the timeline. We'd need to check with finance before committing to anything.
+
+Priya Nair  1:21
+Totally fair. Would it help if we did a short demo of that freight portal for you and your compliance lead?
+
+Tom Becker  1:28
+Yes, that would help a lot. Someone will set that up. Probably after the board meeting though.
+
+Priya Nair  1:34
+Sounds good. Anything else that would rule us out early?
+
+Tom Becker  1:38
+Only if you can't start before March. We need it live before summer hiring.
+
+Priya Nair  1:43
+March is fine on our side.
+
+Tom Becker  1:46
+Okay good. I've got to jump, thanks Priya.
+
+Priya Nair  1:48
+Thanks Tom, talk soon.

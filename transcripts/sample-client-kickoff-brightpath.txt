@@ -1,0 +1,56 @@
+Zoom meeting transcript
+Meeting: BrightPath Dental x Lumen Studio - Website Rebuild Kickoff
+Date: 2026-09-10
+Duration: 00:05:02
+(Fictional transcript written for testing. Companies and people are invented.)
+
+[00:00:04] Priya Nair: Okay, I think everyone's here. Thanks for making the time. Quick intros for anyone who hasn't met. I'm Priya, account lead at Lumen, so I'm your main point of contact. Daniel's our tech lead on this.
+[00:00:15] Daniel Okafor: Hi all. I'll be handling the build and the integrations.
+[00:00:19] Sarah Chen: Hi, Sarah Chen, Director of Operations at BrightPath. I look after the eleven clinics day to day.
+[00:00:25] Mark Ellis: And I'm Mark, I run marketing. Which means I'm the one who's been complaining about the current site for two years.
+[00:00:31] Priya Nair: (laughs) Good, that's exactly who we need. So the goal today is to agree on scope for phase one, figure out what we need from you, and set up how we'll communicate. Sarah, do you want to start with what's hurting most?
+[00:00:42] Sarah Chen: Sure. The biggest thing is online booking. Right now patients call the front desk, and on Mondays we're missing maybe a third of calls. We want people to book online, and it has to go straight into Dentrix, which is our practice management system.
+[00:01:02] Daniel Okafor: Got it. Dentrix does have an API, but access has to be requested through their developer program, and in my experience it can take two to three weeks to approve. So that's our longest lead time.
+[00:01:15] Mark Ellis: Two to three weeks? We were hoping to launch before the January rush.
+[00:01:20] Priya Nair: That's still doable, but here's what I'd suggest. We split it. Phase one is the new site itself: location pages, services, the new brand. Phase two is the booking integration, once Dentrix access comes through. That way the Dentrix wait doesn't hold up the whole launch.
+[00:01:38] Sarah Chen: I'm okay with that as long as phase two isn't months behind.
+[00:01:42] Daniel Okafor: If we submit the request this week, phase two could realistically start mid-October.
+[00:01:48] Sarah Chen: Okay. Then yes, let's do it in two phases.
+[00:01:51] Priya Nair: Great, so that's agreed. Daniel, can you get the Dentrix access request in?
+[00:01:56] Daniel Okafor: Yep, I'll submit the Dentrix developer access request by Friday. I'll need someone from BrightPath to be the account owner on it though, because it has to be tied to your practice license.
+[00:02:06] Sarah Chen: That would be me. Just send me whatever I need to sign.
+[00:02:10] Daniel Okafor: Perfect.
+[00:02:12] Priya Nair: Next, content. For the location pages we need addresses, opening hours, and which services each clinic offers. Is there one place that lives?
+[00:02:21] Sarah Chen: Honestly it's spread across three spreadsheets. I'll pull it together into one list and send it over by Wednesday.
+[00:02:28] Priya Nair: Amazing, thank you. And photos, do you have recent photos of the clinics?
+[00:02:33] Mark Ellis: Some. Half of them are from 2019 and the dentists have changed.
+[00:02:38] Priya Nair: We can arrange a photographer. That would be an add-on to the current quote, though.
+[00:02:43] Mark Ellis: How much are we talking?
+[00:02:45] Priya Nair: Roughly two to three thousand for all eleven locations, depending on travel. We'll get the revised quote over to you with that as an option.
+[00:02:53] Sarah Chen: Okay. Please keep it as a separate line item so I can take it to finance.
+[00:02:58] Priya Nair: Will do.
+[00:03:01] Mark Ellis: Sarah, can you send them the brand guidelines too? The new logo files and all that.
+[00:03:05] Sarah Chen: Actually, you have those, Mark. The agency sent them to you, not me.
+[00:03:09] Mark Ellis: Oh. Right, yeah, they did. Fine, I'll dig them out and send them over this week.
+[00:03:14] Priya Nair: Thanks, Mark. Daniel, on the tech side, anything else we need access to?
+[00:03:19] Daniel Okafor: The domain and DNS, and the current Google Analytics so we don't lose tracking history.
+[00:03:25] Mark Ellis: The analytics logins are a mess. I'll try to get those over to you, but no promises this week. Our old agency set it up under someone's personal account.
+[00:03:35] Daniel Okafor: Understood. If it's under a personal account, we may just need to set up a fresh property and accept losing the history.
+[00:03:42] Sarah Chen: I'd rather not lose the history if we can help it.
+[00:03:45] Priya Nair: Let's not decide that today then. We'll revisit once we know who owns the account.
+[00:03:50] Sarah Chen: One more thing. Because booking touches patient information, someone should probably loop in legal about the data side before we build phase two. HIPAA and all that.
+[00:04:01] Mark Ellis: Yeah, that's a good point.
+[00:04:03] Priya Nair: Agreed, that definitely needs to happen before phase two starts.
+[00:04:07] Priya Nair: Daniel, can you also put together the sitemap for phase one?
+[00:04:11] Daniel Okafor: I'm pretty slammed with the Dentrix stuff this week. Could Aisha take the sitemap? She did the one for the Harbor Vets project.
+[00:04:18] Priya Nair: Good idea. I'll ask Aisha today and get her started on it.
+[00:04:22] Priya Nair: Last thing, communication. How often do you want to check in?
+[00:04:26] Sarah Chen: Weekly is fine. Tuesdays work best for me.
+[00:04:29] Mark Ellis: Tuesday mornings, ideally. Afternoons are clinic meetings.
+[00:04:33] Priya Nair: Great, a weekly Tuesday 10am check-in, starting next Tuesday. And we'll use a shared Slack channel between meetings instead of email.
+[00:04:41] Sarah Chen: Works for me.
+[00:04:43] Priya Nair: And just to confirm budget: phase one stays within the forty-eight thousand we signed, and the photography is optional on top.
+[00:04:50] Sarah Chen: Correct. Anything beyond that needs my sign-off first.
+[00:04:54] Priya Nair: Perfect. I think that's everything. Thanks everyone, talk Tuesday.
+[00:04:58] Mark Ellis: Thanks, bye.
+[00:05:00] Sarah Chen: Thanks all.
