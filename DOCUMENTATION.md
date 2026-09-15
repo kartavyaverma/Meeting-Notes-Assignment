@@ -26,6 +26,13 @@
 - Extraction (attendees, decisions, action items) is a narrow, repeatable task. That suits a fast, cheap model better than a flagship one, and cost matters because this runs on *every* call a business takes, not once.
 - No paid transcription or note-taker service is needed. This assumes the business already has a transcript (from Zoom, Otter's free tier, etc.) and starts from there.
 
+**Doesn't Notion already do this with its built-in AI Meeting Notes?** Partly, yes. Since May 2025, Notion has had AI Meeting Notes: you type `/meet`, it records your system audio live, and it produces a transcript, summary and action items. I checked this before committing to the build. It leaves three real gaps that this workflow fills:
+1. **It's built around live capture.** It has to be recording *during* the call, in the desktop app, on the machine where someone started it. It won't take a transcript that already exists in Zoom, Teams or a free Otter export and file it as structured notes. On a Business plan you *could* paste a transcript into Notion AI and ask for a summary, but that's a manual copy, prompt and reformat job each time, with no consistent structure and no owner checks. Existing transcripts are the more common case at a real business: calls happen in different tools on different people's machines, and nobody remembers to type `/meet` every time.
+2. **It requires Notion's Business plan** (~$20–24/user/month, billed annually). Many businesses this size are on Notion's free or Plus plan and don't have the feature at all. This workflow costs roughly $0.01–0.02 per meeting and needs no plan upgrade.
+3. **It handles one meeting at a time, not a batch.** You can't point the built-in feature at a backlog of old transcripts and catch them all up at once. This workflow processes any transcript file you give it, whenever the call was recorded.
+
+So to be honest about it: Notion already solved this for Business-plan teams who record live in its desktop app. This build is for everyone else: teams on cheaper plans, or using whatever call tool they already have, who have a transcript and want it turned into structured Notion notes without copying, pasting and reformatting by hand.
+
 ---
 
 ## 3. The workflow — what / why / how
@@ -44,8 +51,8 @@
 
 `[SCREENSHOT: Google AI Studio showing the Gemini API key created (key value blurred)]`
 `[SCREENSHOT: the terminal showing the successful test call to gemini-3.8-flash]`
-`[SCREENSHOT: setting up the Notion integration token in Notion's settings (secret blurred)]`
-`[SCREENSHOT: sharing the target database with the integration]`
+`[SCREENSHOT: the Notion connection settings page (Developer tools → Connections → Meeting Notes) showing Access token auth, Read/Update/Insert content enabled, and the token hidden as dots]`
+`[SCREENSHOT: the Meeting Notes database's ••• → Connections menu showing the Meeting Notes connection added]`
 `[SCREENSHOT: the terminal running the /meeting-notes skill against a real transcript]`
 `[SCREENSHOT: the finished Notion page it created]`
 `[GIF: the whole run, from pasting the transcript to the Notion page appearing, in one continuous clip]`
@@ -59,6 +66,7 @@
 | Capability | Type | Pain point it could solve | Why I didn't build this one |
 |---|---|---|---|
 | Official Notion MCP server | New connector | Meeting notes / onboarding / dashboards: anything that writes into Notion | I checked its release date and it isn't actually new. It first shipped in April 2025, with a "3.5" feature update in May 2026, so it misses the assignment's "last few weeks" bar for Part 1. Notion stays in the build only as the destination tool, called through its plain REST API, not as the Part 1 capability |
+| Notion's built-in AI Meeting Notes (`/meet`) | Existing built-in feature, not something to build | The same pain point: meeting notes never get written up | Not a "capability I spotted", since it already exists and isn't new. I'm naming it because it's the obvious "why build this yourself?" question. It captures live, in the desktop app, and needs Notion's Business plan. My build covers existing transcripts and cheaper plans, so I treated it as the competitor to set this apart from, not a pairing to build |
 | Claude Fable 5.1 (Anthropic, Sept 1, 2026) | New model | The same task, with stronger reasoning | Same headline price as GPT-6 Astra ($10/$50 per million tokens), roughly 15–25x more than Gemini 3.8 Flash for a task that's structured extraction, not deep reasoning. Considered, then ruled out on cost per run for a workflow meant to run on every call |
 | GPT-6 Astra (OpenAI, Sept 3, 2026) | New model | Drafting personalized replies to leads from form submissions | More reasoning power than this task needs, the same cost problem as Fable 5.1 above, and it would add a second provider and API key to the workflow |
 | Slack native MCP support | New connector | A DM or comment sits unanswered for hours | Real ICP pain, but testing the native MCP path needs a live Slack workspace on Business+ or Enterprise, which is hard to demo end to end in 1–3 days on a personal account |
@@ -69,29 +77,31 @@
 
 ## 5. Likely interview questions
 
-1. **Why did you pick a Flash-tier model instead of a flagship one?**
+1. **Doesn't Notion already do this natively with its AI Meeting Notes feature?**
    [FILL]
-2. **What happens if the transcript is garbled or the call was cut short — does the skill fail gracefully?**
+2. **Why did you pick a Flash-tier model instead of a flagship one?**
    [FILL]
-3. **Why call Notion's REST API directly instead of using the Notion MCP server?**
+3. **What happens if the transcript is garbled or the call was cut short — does the skill fail gracefully?**
    [FILL]
-4. **Why a Claude Code skill instead of a scheduled/cron job?**
+4. **Why call Notion's REST API directly instead of using the Notion MCP server?**
    [FILL]
-5. **How would you turn this into something that runs automatically after every call, without you manually invoking it?**
+5. **Why a Claude Code skill instead of a scheduled/cron job?**
    [FILL]
-6. **What's the actual caveat you designed around, and how does the safeguard work end to end?**
+6. **How would you turn this into something that runs automatically after every call, without you manually invoking it?**
    [FILL]
-7. **Why this pain point specifically, out of the six the assignment listed?**
+7. **What's the actual caveat you designed around, and how does the safeguard work end to end?**
    [FILL]
-8. **What would break first if 50 people at a company used this simultaneously?**
+8. **Why this pain point specifically, out of the six the assignment listed?**
    [FILL]
-9. **Why didn't you use a visual/no-code tool — wasn't that faster?**
+9. **What would break first if 50 people at a company used this simultaneously?**
    [FILL]
-10. **How did you validate the output was actually correct and not hallucinated action items?**
+10. **Why didn't you use a visual/no-code tool — wasn't that faster?**
     [FILL]
-11. **What would this actually cost a business running it at real volume — say 20 calls a week?**
+11. **How did you validate the output was actually correct and not hallucinated action items?**
+    [FILL]
+12. **What would this actually cost a business running it at real volume — say 20 calls a week?**
     [FILL: use the per-run cost measured from real token usage]
-12. **If you had another week, what's the next thing you'd build on top of this?**
+13. **If you had another week, what's the next thing you'd build on top of this?**
     [FILL]
 
 ---
@@ -106,10 +116,11 @@ Capabilities that shipped in the ~2 weeks before this build (for reference and a
 - Sept 11, 2026: Fugu Ultra v2.0 and Fugu Max (Sakana AI); Salesforce Agentforce named agents
 - Ongoing: Slack native MCP support (Business+/Enterprise); official Notion MCP server; Hex as an MCP client
 
-Sources checked: LLM Gateway release timeline, Capital & Compute model tracker, Agentic.ai news, AI Agent Store weekly digest, and the per-token pricing pages for Gemini 3.8 Flash, Claude Fable 5.1, and GPT-6 Astra (used to compare cost per run before picking Gemini 3.8 Flash). Also Notion's official MCP server changelog and GitHub repo, which confirmed it was *not* recent enough for Part 1 (first shipped April 2025, "3.5" update May 2026).
+Sources checked: LLM Gateway release timeline, Capital & Compute model tracker, Agentic.ai news, AI Agent Store weekly digest, and the per-token pricing pages for Gemini 3.8 Flash, Claude Fable 5.1, and GPT-6 Astra (used to compare cost per run before picking Gemini 3.8 Flash). Also Notion's official MCP server changelog and GitHub repo, which confirmed it was *not* recent enough for Part 1 (first shipped April 2025, "3.5" update May 2026), and Notion's AI Meeting Notes help page and pricing page (live capture in the desktop app, Business plan).
 
 ---
 
 ## 7. Build log
 
 - **Step 1: Scaffold.** Created the project folder with README, `.env.example`, `.gitignore` (ignores `.env` and every transcript except `sample-*`), a `/transcripts` folder, and this document. Chose plain Python with only the standard library (`urllib`) so there's nothing to install and the whole flow is two HTTP calls you can read.
+- **Step 2: API access.** Created a Notion connection (Developer tools → Connections → New connection) using **Access token** auth, scoped to one workspace, with only Read/Update/Insert content and **no user information**, so it gets the least access it needs. Notion had renamed "integrations" to "connections" since most tutorials were written, so `.env.example` points to the new location. [FILL: Gemini key + both test calls]
