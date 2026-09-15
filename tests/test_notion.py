@@ -1,7 +1,7 @@
 import unittest
 from datetime import date
 
-import tests  # noqa: F401  (puts src/ on the path)
+import tests
 from meeting_notes.api import ApiError
 from meeting_notes.config import ConfigError
 from meeting_notes.notion import REQUIRED_COLUMNS, NotionClient, page_blocks, rich_text
@@ -19,7 +19,6 @@ def text_of(block):
 
 
 def notes_with_flags(*flag_lists, **overrides):
-    """Notes whose action items carry the given 'please verify' reasons."""
     base = meeting_notes()["action_items"][0]
     return meeting_notes(action_items=[dict(base, verify=list(flags)) for flags in flag_lists], **overrides)
 

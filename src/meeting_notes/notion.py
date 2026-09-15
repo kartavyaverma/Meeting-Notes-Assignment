@@ -1,5 +1,3 @@
-"""Notion via its REST API: database checks and setup, duplicate detection, and page building."""
-
 from __future__ import annotations
 
 from datetime import date
@@ -10,11 +8,10 @@ from .config import ConfigError, Settings
 
 API_BASE = "https://api.notion.com/v1"
 API_VERSION = "2022-06-28"
-TEXT_LIMIT = 2000        # Notion's max characters per rich-text item
-MAX_TEXT_CHUNKS = 100    # Notion's max rich-text items per property or block
-LIST_LIMIT = 25          # keeps the worst-case page under Notion's 100-blocks-per-request limit
+TEXT_LIMIT = 2000
+MAX_TEXT_CHUNKS = 100
+LIST_LIMIT = 25
 
-# Columns the skill writes, besides the database's title column.
 REQUIRED_COLUMNS = {
     "Date": "date",
     "Attendees": "rich_text",
@@ -27,8 +24,6 @@ Block = Dict[str, Any]
 
 
 class NotionClient:
-    """Talks to one Notion database. `http` is injectable for tests."""
-
     def __init__(self, settings: Settings, http: Callable[..., Dict[str, Any]] = request_json) -> None:
         self.settings = settings
         self._http = http
@@ -51,15 +46,10 @@ class NotionClient:
             raise ApiError(e.status, e.message, "Notion") from None
 
     def columns(self) -> Dict[str, str]:
-        """Column name -> Notion property type for the configured database."""
         database = self._call("GET", f"/databases/{self._database}")
         return {name: prop["type"] for name, prop in database["properties"].items()}
 
     def check_database(self) -> str:
-        """Confirm every required column exists with the right type; return the title column's name.
-
-        Called once per run, before any Gemini tokens are spent.
-        """
         columns = self.columns()
         problems = []
         for name, kind in REQUIRED_COLUMNS.items():
@@ -74,7 +64,6 @@ class NotionClient:
         return _title_column(columns)
 
     def init_database(self) -> List[str]:
-        """Add any missing required columns. Never changes existing columns. Returns the names added."""
         columns = self.columns()
         wrong = [f"'{name}' is {columns[name]}, expected {kind}"
                  for name, kind in REQUIRED_COLUMNS.items() if name in columns and columns[name] != kind]
@@ -88,11 +77,6 @@ class NotionClient:
         return missing
 
     def find_existing(self, source: str, digest: str) -> Optional[str]:
-        """URL of a page already imported from this transcript, or None.
-
-        Matches by content hash first. Pages imported before hashes existed have an empty hash
-        and are matched by filename instead.
-        """
         url = self._first_match({"property": "Content hash", "rich_text": {"equals": digest}})
         if url:
             return url
@@ -116,7 +100,6 @@ class NotionClient:
         model: str,
         today: Optional[date] = None,
     ) -> str:
-        """Create the meeting-notes page and return its URL."""
         properties: Dict[str, Any] = {
             title_column: {"title": rich_text(notes["title"])},
             "Attendees": {"rich_text": rich_text(", ".join(a["name"] for a in notes["attendees"]))},
@@ -142,7 +125,6 @@ def _title_column(columns: Dict[str, str]) -> str:
 
 
 def rich_text(text: Any) -> List[Dict[str, Any]]:
-    """Notion rich text, split into chunks that respect its per-item character limit."""
     text = str(text or "")
     chunks = [text[i:i + TEXT_LIMIT] for i in range(0, len(text), TEXT_LIMIT)][:MAX_TEXT_CHUNKS]
     return [{"type": "text", "text": {"content": chunk}} for chunk in chunks]
@@ -172,7 +154,6 @@ def page_blocks(
     model: str,
     today: Optional[date] = None,
 ) -> List[Block]:
-    """The page body: review callout, summary, attendees, decisions, action-items table, assumptions, footer."""
     items = notes["action_items"]
     flagged = [item for item in items if item["verify"]]
     blocks: List[Block] = []

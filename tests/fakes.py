@@ -1,5 +1,3 @@
-"""Test doubles and sample data shared across the test suite."""
-
 import copy
 import json
 
@@ -15,8 +13,6 @@ SETTINGS = Settings(
 
 
 class FakeHttp:
-    """Stands in for api.request_json: returns or raises scripted responses in order and records each call."""
-
     def __init__(self, *responses):
         self.responses = list(responses)
         self.calls = []
@@ -32,7 +28,6 @@ class FakeHttp:
 
 
 def meeting_notes(**overrides):
-    """Normalized notes as the Gemini client returns them (before verification adds `verify`)."""
     notes = {
         "is_meeting_transcript": True,
         "rejection_reason": "",
@@ -56,7 +51,6 @@ def meeting_notes(**overrides):
 
 
 def gemini_response(notes, usage=None, finish="STOP"):
-    """A generateContent response wrapping `notes` as the model's JSON answer."""
     return {
         "candidates": [{"finishReason": finish, "content": {"parts": [{"text": json.dumps(notes)}]}}],
         "usageMetadata": usage or {"promptTokenCount": 1000, "candidatesTokenCount": 400, "thoughtsTokenCount": 0},

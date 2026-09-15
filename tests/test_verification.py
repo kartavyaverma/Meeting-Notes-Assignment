@@ -3,12 +3,11 @@ import unittest
 from tests import TRANSCRIPTS
 from meeting_notes.verification import fix_date, verify_action_items
 
-KICKOFF = "sample-client-kickoff-brightpath.txt"    # Zoom style: "[00:01:02] Name: text"
-DISCOVERY = "sample-sales-discovery-ridgeline.txt"  # Otter style: "Name  0:12", then text
+KICKOFF = "sample-client-kickoff-brightpath.txt"
+DISCOVERY = "sample-sales-discovery-ridgeline.txt"
 
 
 def reasons(transcript, owner, quote, status="explicit", soft=False):
-    """Run the owner check on one action item and return its 'please verify' reasons."""
     text = (TRANSCRIPTS / transcript).read_text(encoding="utf-8")
     notes = {"action_items": [{"task": "-", "owner": owner, "owner_status": status, "evidence": quote,
                                "due": "", "soft_commitment": soft}]}
@@ -17,20 +16,16 @@ def reasons(transcript, owner, quote, status="explicit", soft=False):
 
 
 class OwnerCheckTests(unittest.TestCase):
-    """The model claims every owner below is 'explicit'. The check must not take its word for it."""
-
     def test_correct_owner_passes(self):
         self.assertEqual(reasons(KICKOFF, "Mark Ellis", "Fine, I'll dig them out and send them over this week."), [])
         self.assertEqual(reasons(KICKOFF, "Daniel Okafor",
                                  "I'll submit the Dentrix developer access request by Friday"), [])
 
     def test_person_who_was_asked_first_is_caught(self):
-        # Mark asks Sarah for the brand guidelines, Sarah says Mark has them, Mark agrees.
         self.assertIn("the quote isn't from or addressed to Sarah Chen",
                       reasons(KICKOFF, "Sarah Chen", "Fine, I'll dig them out and send them over this week."))
 
     def test_person_who_handed_the_task_off_is_caught(self):
-        # Daniel passes the sitemap to Aisha; Priya is the one who says she'll ask Aisha.
         self.assertIn("the quote isn't from or addressed to Daniel Okafor",
                       reasons(KICKOFF, "Daniel Okafor", "I'll ask Aisha today and get her started on it."))
 

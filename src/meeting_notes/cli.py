@@ -1,12 +1,3 @@
-"""Command line: turn transcript files or folders into Notion pages, or set up the database.
-
-    python .claude/skills/meeting-notes/meeting_notes.py transcripts/ [--dry-run] [--force]
-    python .claude/skills/meeting-notes/meeting_notes.py --init-db
-
-Exit codes: 0 = every file created, skipped or previewed; 1 = at least one file failed;
-2 = setup problem (missing keys, bad paths, unreachable or incomplete Notion database).
-"""
-
 from __future__ import annotations
 
 import argparse
@@ -24,7 +15,7 @@ from .transcript import content_hash, precheck, read_transcript
 from .verification import fix_date, verify_action_items
 
 EXIT_OK, EXIT_FAILED, EXIT_CONFIG = 0, 1, 2
-STOP_BATCH_STATUSES = (429, 503)   # Gemini overloaded or out of quota: the rest of the batch would fail too
+STOP_BATCH_STATUSES = (429, 503)
 
 Output = Callable[[str], None]
 
@@ -32,12 +23,11 @@ Output = Callable[[str], None]
 @dataclass
 class Result:
     name: str
-    status: str   # created | skipped | dry run | failed | not run
+    status: str
     detail: str
 
 
 def collect_files(paths: Sequence[str]) -> List[Path]:
-    """Expand folders to their .txt files (sorted), keep explicit files, drop duplicates."""
     files: List[Path] = []
     for path in map(Path, paths):
         if path.is_dir():
@@ -58,9 +48,6 @@ def collect_files(paths: Sequence[str]) -> List[Path]:
 
 
 class Runner:
-    """Processes a batch of transcripts. One bad file never stops the others, except when Gemini itself
-    is overloaded or out of quota, where continuing would only burn requests."""
-
     def __init__(self, gemini: GeminiClient, notion: Optional[NotionClient], *,
                  dry_run: bool = False, force: bool = False, out: Output = print) -> None:
         self.gemini = gemini
@@ -188,7 +175,6 @@ def _init_db(out: Output) -> int:
 
 
 def _utf8_console() -> None:
-    """Windows consoles default to a legacy code page that can't print ✅/⚠️."""
     for stream in (sys.stdout, sys.stderr):
         reconfigure = getattr(stream, "reconfigure", None)
         if reconfigure is not None:

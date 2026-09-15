@@ -4,7 +4,7 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
-import tests  # noqa: F401  (puts src/ on the path)
+import tests
 from meeting_notes.config import DEFAULT_MODEL, ConfigError, Settings, load_dotenv
 
 KEYS = ("GEMINI_API_KEY", "GEMINI_MODEL", "NOTION_TOKEN", "NOTION_DATABASE_ID",
@@ -12,7 +12,6 @@ KEYS = ("GEMINI_API_KEY", "GEMINI_MODEL", "NOTION_TOKEN", "NOTION_DATABASE_ID",
 
 
 def env(**values):
-    """Patch the environment with every setting blank except the ones given."""
     patched = {key: "" for key in KEYS}
     patched.update(values)
     return mock.patch.dict(os.environ, patched)

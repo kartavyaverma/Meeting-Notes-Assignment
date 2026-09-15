@@ -1,7 +1,7 @@
 import json
 import unittest
 
-import tests  # noqa: F401  (puts src/ on the path)
+import tests
 from meeting_notes.api import ApiError
 from meeting_notes.config import Settings
 from meeting_notes.gemini import GeminiClient, cost_usd, normalize_notes, parse_response

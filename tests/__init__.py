@@ -1,10 +1,3 @@
-"""Offline test suite: no network calls, no API keys, no quota.
-
-Run from the repository root:
-
-    python -m unittest
-"""
-
 import sys
 from pathlib import Path
 

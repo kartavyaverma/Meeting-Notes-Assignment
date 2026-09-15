@@ -1,5 +1,3 @@
-"""Configuration from environment variables, optionally loaded from a .env file."""
-
 from __future__ import annotations
 
 import os
@@ -12,15 +10,10 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 
 
 class ConfigError(Exception):
-    """Missing or invalid setup. The message says how to fix it."""
+    pass
 
 
 def load_dotenv(start: Optional[Path] = None) -> Optional[Path]:
-    """Load KEY=VALUE pairs from `.env` in `start` (default: the current directory) or the repo root.
-
-    Variables already set in the environment always win, so a shell or scheduler can override the file.
-    Returns the file that was loaded, if any.
-    """
     for directory in ((start or Path.cwd()).resolve(), REPO_ROOT):
         candidate = directory / ".env"
         if candidate.is_file():
@@ -42,7 +35,6 @@ def _parse_dotenv(text: str) -> Iterator[Tuple[str, str]]:
 
 
 def _get(name: str) -> str:
-    """An environment value, treating unfilled `.env.example` placeholders as unset."""
     value = os.environ.get(name, "").strip()
     return "" if value.lower().startswith("your-") else value
 
@@ -71,7 +63,6 @@ class Settings:
 
     @classmethod
     def from_env(cls, *, need_gemini: bool = True, need_notion: bool = True) -> "Settings":
-        """Build settings from the environment, failing with one clear message listing what's missing."""
         settings = cls(
             gemini_api_key=_get("GEMINI_API_KEY"),
             gemini_model=_get("GEMINI_MODEL") or DEFAULT_MODEL,

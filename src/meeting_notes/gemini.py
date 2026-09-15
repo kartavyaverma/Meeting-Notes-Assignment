@@ -1,5 +1,3 @@
-"""Extraction with Gemini 3.8 Flash: prompt, response schema, retries, response parsing and cost."""
-
 from __future__ import annotations
 
 import json
@@ -10,7 +8,7 @@ from .api import ApiError, request_json
 from .config import Settings
 
 API_BASE = "https://generativelanguage.googleapis.com/v1beta/models"
-RETRY_WAITS_S = (20, 40)   # few, spaced retries: failed calls can still count against quota
+RETRY_WAITS_S = (20, 40)
 RETRY_STATUSES = (429, 500, 503)
 OWNER_STATUSES = ("explicit", "implied", "unassigned")
 
@@ -70,8 +68,6 @@ SCHEMA = {
 
 
 class GeminiClient:
-    """Calls Gemini's generateContent endpoint. `http`, `sleep` and `notify` are injectable for tests."""
-
     def __init__(
         self,
         settings: Settings,
@@ -89,7 +85,6 @@ class GeminiClient:
         return self.settings.gemini_model
 
     def extract(self, text: str, source: str) -> Tuple[Notes, Usage]:
-        """Extract structured notes from one transcript. Raises ApiError (service "Gemini") on failure."""
         body = {
             "systemInstruction": {"parts": [{"text": PROMPT}]},
             "contents": [{"role": "user", "parts": [{"text": f"Transcript file: {source}\n\n{text}"}]}],
@@ -113,7 +108,7 @@ class GeminiClient:
                 message = e.message.lower()
                 config = body["generationConfig"]
                 if e.status == 400 and "thinking" in message and "thinkingConfig" in config:
-                    del config["thinkingConfig"]   # model doesn't accept this setting; retry without it
+                    del config["thinkingConfig"]
                     continue
                 if e.status == 404:
                     raise ApiError(404, f"model {self.model!r} isn't available to this API key; check GEMINI_MODEL",
@@ -131,7 +126,6 @@ class GeminiClient:
 
 
 def parse_response(response: Dict[str, Any]) -> Notes:
-    """Turn a generateContent response into normalized notes, or raise ApiError if it's unusable."""
     candidates = response.get("candidates") or []
     if not candidates:
         reason = (response.get("promptFeedback") or {}).get("blockReason", "no reason given")
@@ -151,11 +145,6 @@ def parse_response(response: Dict[str, Any]) -> Notes:
 
 
 def normalize_notes(data: Dict[str, Any]) -> Notes:
-    """Coerce model output into the exact shape the rest of the pipeline expects.
-
-    Every list is freshly created, malformed entries are dropped, and an unknown owner_status becomes
-    "unassigned" so it gets flagged rather than trusted.
-    """
     attendees = [
         {"name": _text(a.get("name")), "role": _text(a.get("role"))}
         for a in _list(data.get("attendees")) if isinstance(a, dict) and _text(a.get("name"))
@@ -187,7 +176,6 @@ def normalize_notes(data: Dict[str, Any]) -> Notes:
 
 
 def cost_usd(usage: Usage, settings: Settings) -> Optional[float]:
-    """Cost of one call, or None if prices aren't configured. Thinking tokens bill at the output price."""
     if settings.input_usd_per_m is None or settings.output_usd_per_m is None:
         return None
     output_tokens = usage.get("candidatesTokenCount", 0) + usage.get("thoughtsTokenCount", 0)

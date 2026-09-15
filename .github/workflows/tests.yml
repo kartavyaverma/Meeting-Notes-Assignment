@@ -6,7 +6,6 @@ on:
 
 jobs:
   offline-tests:
-    # The suite never calls Gemini or Notion, so it needs no secrets.
     strategy:
       fail-fast: false
       matrix:

@@ -2,6 +2,14 @@
 
 Notable changes to this project. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [Unreleased]
+
+### Added
+- `PROJECT_STRUCTURE.md`: a file-by-file guide to the code, with flow and module diagrams.
+
+### Changed
+- Removed comments and docstrings from the code and configuration files. Their explanations now live in `PROJECT_STRUCTURE.md`.
+
 ## [1.0.0] - 2026-09-15
 
 ### Added
