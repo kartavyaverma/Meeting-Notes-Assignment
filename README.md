@@ -24,7 +24,7 @@ For a file-by-file explanation of the code, see [PROJECT_STRUCTURE.md](PROJECT_S
    copy .env.example .env
    ```
 2. **Notion.**
-   1. In Notion, go to **Developer tools → Connections → New connection**, choose **Access token**, and enable Read/Update/Insert content (no user information needed). Copy the token into `NOTION_TOKEN`.
+   1. In Notion, go to **Developer tools → Connections → New connection**, choose **Access token**, and enable Read, Update and Insert content. Copy the token into `NOTION_TOKEN`.
    2. Create an empty full-page database, open **••• → Connections**, and add your connection.
    3. Copy the database ID (the 32-character code before `?v=` in its URL) into `NOTION_DATABASE_ID`.
 3. **Columns.** Add the columns the tool writes. This is safe to run again; it only adds what's missing:
@@ -129,7 +129,7 @@ Conventions:
 
 - `.env` is git-ignored. Never commit keys; if one is ever exposed (in a screenshot, recording or chat), rotate it.
 - Everything in `transcripts/` is git-ignored except `sample-*` files, because real transcripts contain client data.
-- The Notion connection only sees databases you add it to and doesn't need user information.
+- The Notion connection only sees the databases you explicitly add it to.
 - Set a budget alert on the Google Cloud billing account.
 
 ## Limitations
