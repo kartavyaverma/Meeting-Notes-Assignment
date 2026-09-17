@@ -7,8 +7,6 @@ A command-line tool, powered by **Gemini 3.8 Flash**, that turns call transcript
 - **Destination:** a Notion database, written through Notion's REST API.
 - **Footprint:** Python standard library only. No server, no frontend, nothing to deploy.
 
-For a file-by-file explanation of the code, see [PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md). For the design reasoning, test results and assignment write-up, see [DOCUMENTATION.md](DOCUMENTATION.md).
-
 ---
 
 ## Requirements
@@ -107,9 +105,6 @@ src/meeting_notes/
   notion.py             Database checks and setup, duplicates, page building
 tests/                  Offline test suite (no network, no keys)
 transcripts/            Input; only sample-* files are committed
-DOCUMENTATION.md        Assignment write-up and build log
-PROJECT_STRUCTURE.md    File-by-file guide to the code
-CHANGELOG.md            Release notes
 ```
 
 ## Development
